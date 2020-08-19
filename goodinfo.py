@@ -55,23 +55,39 @@ for res in dict['當天交易資料'].find_all('tr'):
 
 # print('\n array => ', data_array)
 
-res_dict = {}
-res_dict['stkno'] = data_array[0].split()[0]
-res_dict['name'] = data_array[0].split()[1]
-res_dict['date'] = data_array[3].split(': ')[1]
+def getStockData(data_array):
+    res_dict = {}
+    res_dict['stkno'] = data_array[0].split()[0]
+    res_dict['name'] = data_array[0].split()[1]
 
-first_column = data_array.index("成交價")
-for i in range(first_column, first_column+8):
-    res_dict[data_array[i]] = data_array[i+8]
+    data_index = 0
+    for data in data_array: 
+        date_column = data.find('資料日期')
+        if date_column != -1:
+            break
+        data_index += 1
+    res_dict['date'] = data_array[data_index].split(': ')[1]
 
-second_column = data_array.index("成交張數")
-for i in range(second_column, second_column+8):
-    res_dict[data_array[i]] = data_array[i+8]
+    first_column = data_array.index("成交價")
+    for i in range(first_column, first_column+8):
+        res_dict[data_array[i]] = data_array[i+8]
 
-third_column = data_array.index("昨日張數")
-for i in range(third_column, third_column+6):
-    res_dict[data_array[i]] = data_array[i+6]
+    second_column = data_array.index("成交張數")
+    for i in range(second_column, second_column+8):
+        res_dict[data_array[i]] = data_array[i+8]
 
-print('\n\nres dict =>', res_dict)
-print('\n\n name =>', res_dict['name'])
-print('\n\n')
+    third_column = data_array.index("昨日張數")
+    for i in range(third_column, third_column+6):
+        res_dict[data_array[i]] = data_array[i+6]
+    
+    return res_dict
+
+if data_array[0] == '查無最新資料':
+    print('查無最新資料')
+else:
+    result = getStockData(data_array)
+    print('\n\n result =>', result)
+    print('\n\n name =>', result['name'])
+    print('\n\n')
+    
+
